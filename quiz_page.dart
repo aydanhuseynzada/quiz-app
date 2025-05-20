@@ -16,27 +16,26 @@ class _QuizPageState extends State<QuizPage> {
   int _currentQuestionIndex = 0;
   int _selectedOptionIndex = -1;
   List<int> _userAnswers = [];
-  int _timer = 20;
+  List<int> _questionTimers = [];
   Timer? _timerInstance;
 
   @override
   void initState() {
     super.initState();
     _userAnswers = List.filled(widget.quiz.questions.length, -1);
+    _questionTimers = List.filled(widget.quiz.questions.length, 20); // Hər sual üçün 20 saniyə
     _startTimer();
   }
 
-  // Timer başlatmaq və əvvəlkini ləğv etmək
   void _startTimer() {
-    _timerInstance?.cancel(); // Əvvəlki timeri ləğv et
-    _timer = 20;
+    _timerInstance?.cancel();
     _timerInstance = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timer > 0) {
+      if (_questionTimers[_currentQuestionIndex] > 0) {
         setState(() {
-          _timer--;
+          _questionTimers[_currentQuestionIndex]--;
         });
       } else {
-        _nextQuestion();
+        _nextQuestion(); // Vaxt bitdisə növbəti suala keç
       }
     });
   }
@@ -120,9 +119,9 @@ class _QuizPageState extends State<QuizPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Timer göstərilir
+            // Timer
             Text(
-              _formatTime(_timer),
+              _formatTime(_questionTimers[_currentQuestionIndex]),
               style: const TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
@@ -131,7 +130,7 @@ class _QuizPageState extends State<QuizPage> {
             ),
             const SizedBox(height: 20),
 
-            // Progress göstəricisi
+            // Progress Bar
             LinearProgressIndicator(
               value: (_currentQuestionIndex + 1) / widget.quiz.questions.length,
             ),
@@ -174,7 +173,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
             const SizedBox(height: 16),
 
-            // Cavab variantları
+            // Options
             Expanded(
               child: ListView.builder(
                 itemCount: question.options.length,
@@ -191,7 +190,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ),
 
-            // Previous və Next düymələri
+            // Previous & Next buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -212,7 +211,7 @@ class _QuizPageState extends State<QuizPage> {
             ),
             const SizedBox(height: 16),
 
-            // Sual nömrələri
+            // Question numbers (bottom)
             Wrap(
               alignment: WrapAlignment.center,
               children: List.generate(widget.quiz.questions.length, (index) {
@@ -300,4 +299,5 @@ class OptionItem extends StatelessWidget {
     );
   }
 }
+
 
