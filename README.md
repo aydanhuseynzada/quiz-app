@@ -1,5 +1,5 @@
 # quiz-app
-This project built using Flutter.
+This project built using Flutter and Visual Studio Code.
 Created by Aygun Najafli, Aydan Huseynzada, Amina Ahmadova
 This is a complete Flutter app for a quiz game. Here's a short breakdown of the code:
 
